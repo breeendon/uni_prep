@@ -1,3 +1,3 @@
-# namer_app
+# uni_prep
 
 A new Flutter project.
