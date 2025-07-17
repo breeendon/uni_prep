@@ -31,7 +31,21 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyAppState extends ChangeNotifier {}
+class MyAppState extends ChangeNotifier {
+  final List<String> userColleges = [];
+
+  void addCollege(String college) {
+    if (!userColleges.contains(college)) {
+      userColleges.add(college);
+      notifyListeners();
+    }
+  }
+
+  void removeCollege(String college) {
+    userColleges.remove(college);
+    notifyListeners();
+  }
+}
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
