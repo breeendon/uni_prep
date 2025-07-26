@@ -8,9 +8,9 @@ To access the site use https://uni-prep-7lba.vercel.app
 
 To run locally:
 
-1. Clone the repository
+# 1. Clone the repository
 git clone https://github.com/breeendon/uni_prep.git
 cd uni_prep
-2. Run the development server
+# 2. Run the development server
 npm run dev
-3. Use the app!
+# 3. Use the app!
