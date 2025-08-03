@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
-import 'college_data.dart'; // Make sure this is present and correct
+import 'college_data.dart';
 
 List<String> schools = [];
 
@@ -17,8 +17,7 @@ class _CollegeListState extends State<CollegeList> {
   String _searchText = '';
   final int _suggestionLimit = 10;
 
-  // ...allColleges and collegeUrls are now imported from college_data.dart
-  // AP credit policies are now imported from college_data.dart
+
 
   @override
   Widget build(BuildContext context) {
@@ -270,3 +269,4 @@ class _CollegeListState extends State<CollegeList> {
     );
   }
 }
+
