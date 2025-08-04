@@ -17,8 +17,6 @@ class _CollegeListState extends State<CollegeList> {
   String _searchText = '';
   final int _suggestionLimit = 10;
 
-
-
   @override
   Widget build(BuildContext context) {
     final appState = Provider.of<MyAppState>(context);
@@ -175,30 +173,21 @@ class _CollegeListState extends State<CollegeList> {
                                 color: Colors.blue),
                             tooltip: 'View AP credit info',
                             onPressed: () {
-                              final apInfo = apCreditPolicies[college];
                               final appState = Provider.of<MyAppState>(context,
                                   listen: false);
                               List<Widget> infoWidgets = [];
-                              if (apInfo == null) {
-                                infoWidgets.add(
-                                    const Text('No AP credit info available.'));
+                              if (appState.apScores.isEmpty) {
+                                infoWidgets.add(const Text('No AP scores added.'));
                               } else {
                                 infoWidgets.add(const Text(
-                                    'Accepted AP Exams and Minimum Scores:'));
+                                    'Your AP Exams and Credit Status:'));
                                 infoWidgets.add(const SizedBox(height: 10));
-                                // Show all AP exams the user has entered
-                                final userExams =
-                                    appState.apScores.keys.toSet();
-                                final collegeExams = apInfo.keys.toSet();
-                                final allExams = {
-                                  ...userExams,
-                                  ...collegeExams
-                                };
-                                for (final exam in allExams) {
+                                for (final exam in appState.apScores.keys) {
                                   final userScore = appState.apScores[exam];
-                                  final minScore = apInfo[exam];
-                                  if (minScore != null && userScore != null) {
-                                    if (userScore >= minScore) {
+                                  final policy = getApCreditPolicy(exam);
+                                  final minScore = policy?[college];
+                                  if (minScore != null) {
+                                    if (userScore! >= minScore) {
                                       infoWidgets.add(Row(children: [
                                         Icon(Icons.check,
                                             color: Colors.green, size: 18),
@@ -215,10 +204,7 @@ class _CollegeListState extends State<CollegeList> {
                                             '$exam: $userScore (no credit, min $minScore)'),
                                       ]));
                                     }
-                                  } else if (minScore != null) {
-                                    infoWidgets
-                                        .add(Text('$exam: min $minScore'));
-                                  } else if (userScore != null) {
+                                  } else {
                                     infoWidgets.add(Row(children: [
                                       Icon(Icons.block,
                                           color: Colors.grey, size: 18),
@@ -269,4 +255,4 @@ class _CollegeListState extends State<CollegeList> {
     );
   }
 }
-
+                      
