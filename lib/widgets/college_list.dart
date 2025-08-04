@@ -175,62 +175,399 @@ class _CollegeListState extends State<CollegeList> {
                             onPressed: () {
                               final appState = Provider.of<MyAppState>(context,
                                   listen: false);
-                              List<Widget> infoWidgets = [];
-                              if (appState.apScores.isEmpty) {
-                                infoWidgets.add(const Text('No AP scores added.'));
-                              } else {
-                                infoWidgets.add(const Text(
-                                    'Your AP Exams and Credit Status:'));
-                                infoWidgets.add(const SizedBox(height: 10));
-                                for (final exam in appState.apScores.keys) {
-                                  final userScore = appState.apScores[exam];
-                                  final policy = getApCreditPolicy(exam);
-                                  final minScore = policy?[college];
-                                  if (minScore != null) {
-                                    if (userScore! >= minScore) {
-                                      infoWidgets.add(Row(children: [
-                                        Icon(Icons.check,
-                                            color: Colors.green, size: 18),
-                                        SizedBox(width: 6),
-                                        Text(
-                                            '$exam: $userScore (credit, min $minScore)'),
-                                      ]));
-                                    } else {
-                                      infoWidgets.add(Row(children: [
-                                        Icon(Icons.close,
-                                            color: Colors.red, size: 18),
-                                        SizedBox(width: 6),
-                                        Text(
-                                            '$exam: $userScore (no credit, min $minScore)'),
-                                      ]));
-                                    }
-                                  } else {
-                                    infoWidgets.add(Row(children: [
-                                      Icon(Icons.block,
-                                          color: Colors.grey, size: 18),
-                                      SizedBox(width: 6),
-                                      Text('$exam: $userScore (not accepted)'),
-                                    ]));
-                                  }
-                                }
-                              }
                               showDialog(
                                 context: context,
                                 builder: (context) {
-                                  return AlertDialog(
-                                    title: Text(college),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: infoWidgets,
+                                  final theme = Theme.of(context);
+                                  final isDark =
+                                      theme.brightness == Brightness.dark;
+
+                                  return Dialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
                                     ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: const Text('Close'),
+                                    child: Container(
+                                      constraints: const BoxConstraints(
+                                        maxWidth: 500,
+                                        maxHeight: 600,
                                       ),
-                                    ],
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        gradient: LinearGradient(
+                                          colors: isDark
+                                              ? [
+                                                  const Color(0xFF2D2D2D),
+                                                  const Color(0xFF404040)
+                                                ]
+                                              : [
+                                                  Colors.white,
+                                                  Colors.grey.shade50
+                                                ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          // Header
+                                          Container(
+                                            padding: const EdgeInsets.all(24),
+                                            decoration: BoxDecoration(
+                                              gradient: const LinearGradient(
+                                                colors: [
+                                                  Color(0xFF6C5CE7),
+                                                  Color(0xFF74B9FF)
+                                                ],
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
+                                              ),
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                topLeft: Radius.circular(20),
+                                                topRight: Radius.circular(20),
+                                              ),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.all(12),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white
+                                                        .withOpacity(0.2),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12),
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.school,
+                                                    color: Colors.white,
+                                                    size: 24,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 16),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        college,
+                                                        style: const TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      const Text(
+                                                        'AP Credit Policy',
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors.white70,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  icon: const Icon(Icons.close,
+                                                      color: Colors.white),
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          // Content
+                                          Flexible(
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(24),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  if (appState
+                                                      .apScores.isEmpty) ...[
+                                                    Center(
+                                                      child: Column(
+                                                        children: [
+                                                          Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(16),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: isDark
+                                                                  ? const Color(
+                                                                      0xFF404040)
+                                                                  : Colors.grey
+                                                                      .shade100,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          50),
+                                                            ),
+                                                            child: Icon(
+                                                              Icons
+                                                                  .quiz_outlined,
+                                                              size: 48,
+                                                              color: isDark
+                                                                  ? Colors.grey
+                                                                      .shade400
+                                                                  : Colors.grey
+                                                                      .shade600,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 16),
+                                                          Text(
+                                                            'No AP scores added yet',
+                                                            style: TextStyle(
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              color: isDark
+                                                                  ? Colors.white
+                                                                  : Colors
+                                                                      .black87,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          Text(
+                                                            'Add your AP exam scores to see credit eligibility',
+                                                            style: TextStyle(
+                                                              color: isDark
+                                                                  ? Colors.grey
+                                                                      .shade400
+                                                                  : Colors.grey
+                                                                      .shade600,
+                                                            ),
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ] else ...[
+                                                    Text(
+                                                      'Your AP Exams and Credit Status:',
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: isDark
+                                                            ? Colors.white
+                                                            : Colors.black87,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 16),
+                                                    Flexible(
+                                                      child: ListView.separated(
+                                                        shrinkWrap: true,
+                                                        itemCount: appState
+                                                            .apScores
+                                                            .keys
+                                                            .length,
+                                                        separatorBuilder:
+                                                            (context, index) =>
+                                                                const SizedBox(
+                                                                    height: 12),
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          final exam = appState
+                                                              .apScores.keys
+                                                              .elementAt(index);
+                                                          final userScore =
+                                                              appState.apScores[
+                                                                  exam];
+                                                          final policy =
+                                                              getApCreditPolicy(
+                                                                  exam);
+                                                          final minScore =
+                                                              policy?[college];
+
+                                                          Color statusColor;
+                                                          IconData statusIcon;
+                                                          String statusText;
+
+                                                          if (minScore !=
+                                                              null) {
+                                                            if (userScore! >=
+                                                                minScore) {
+                                                              statusColor =
+                                                                  Colors.green;
+                                                              statusIcon = Icons
+                                                                  .check_circle;
+                                                              statusText =
+                                                                  'Credit Awarded';
+                                                            } else {
+                                                              statusColor =
+                                                                  Colors.orange;
+                                                              statusIcon =
+                                                                  Icons.warning;
+                                                              statusText =
+                                                                  'No Credit';
+                                                            }
+                                                          } else {
+                                                            statusColor =
+                                                                Colors.grey;
+                                                            statusIcon =
+                                                                Icons.block;
+                                                            statusText =
+                                                                'Not Accepted';
+                                                          }
+
+                                                          return Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(16),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: isDark
+                                                                  ? const Color(
+                                                                      0xFF404040)
+                                                                  : Colors
+                                                                      .white,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12),
+                                                              border:
+                                                                  Border.all(
+                                                                color: statusColor
+                                                                    .withOpacity(
+                                                                        0.3),
+                                                                width: 1.5,
+                                                              ),
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.05),
+                                                                  blurRadius: 8,
+                                                                  offset:
+                                                                      const Offset(
+                                                                          0, 2),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            child: Row(
+                                                              children: [
+                                                                Container(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(
+                                                                          8),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: statusColor
+                                                                        .withOpacity(
+                                                                            0.1),
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(8),
+                                                                  ),
+                                                                  child: Icon(
+                                                                    statusIcon,
+                                                                    color:
+                                                                        statusColor,
+                                                                    size: 20,
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                    width: 12),
+                                                                Expanded(
+                                                                  child: Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Text(
+                                                                        exam,
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              14,
+                                                                          fontWeight:
+                                                                              FontWeight.w600,
+                                                                          color: isDark
+                                                                              ? Colors.white
+                                                                              : Colors.black87,
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                          height:
+                                                                              4),
+                                                                      Row(
+                                                                        children: [
+                                                                          Container(
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(
+                                                                              horizontal: 8,
+                                                                              vertical: 2,
+                                                                            ),
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                              color: statusColor.withOpacity(0.1),
+                                                                              borderRadius: BorderRadius.circular(4),
+                                                                            ),
+                                                                            child:
+                                                                                Text(
+                                                                              statusText,
+                                                                              style: TextStyle(
+                                                                                fontSize: 12,
+                                                                                fontWeight: FontWeight.w500,
+                                                                                color: statusColor,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              width: 8),
+                                                                          Text(
+                                                                            'Score: $userScore',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 12,
+                                                                              color: isDark ? Colors.grey.shade300 : Colors.grey.shade600,
+                                                                            ),
+                                                                          ),
+                                                                          if (minScore !=
+                                                                              null) ...[
+                                                                            Text(
+                                                                              ' • Min: $minScore',
+                                                                              style: TextStyle(
+                                                                                fontSize: 12,
+                                                                                color: isDark ? Colors.grey.shade300 : Colors.grey.shade600,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   );
                                 },
                               );
@@ -255,4 +592,3 @@ class _CollegeListState extends State<CollegeList> {
     );
   }
 }
-                      

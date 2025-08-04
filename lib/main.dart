@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/browser_client.dart';
 import 'package:provider/provider.dart';
 import 'widgets/scores_page.dart';
 import 'widgets/college_list.dart';
-//kjjkjkjkjkjjkjjkjkjkjkkjkjkkjkjkkjkjkjkjkjkjkjkjjjkjkjkjkkjkjjkjkjkjkjkjjkjkjkjkkjkjkjkjkjkjkjk
 
 var icon = Icons.visibility;
 
@@ -444,305 +442,350 @@ class _PracticePageState extends State<PracticePage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final screenSize = MediaQuery.of(context).size;
+    final isSmallScreen = screenSize.width < 600 || screenSize.height < 700;
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Card(
-          elevation: 12,
-          shadowColor: Colors.black.withOpacity(isDark ? 0.4 : 0.15),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-              gradient: LinearGradient(
-                colors: isDark
-                    ? [const Color(0xFF2D2D2D), const Color(0xFF404040)]
-                    : [Colors.white, Colors.grey.shade50],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 32.0, vertical: 36.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF6C5CE7), Color(0xFF74B9FF)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
+    return SingleChildScrollView(
+      physics: const ClampingScrollPhysics(),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: screenSize.height -
+              MediaQuery.of(context).padding.top -
+              MediaQuery.of(context).padding.bottom -
+              kToolbarHeight,
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(isSmallScreen ? 16.0 : 32.0),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: Card(
+                elevation: 12,
+                shadowColor: Colors.black.withOpacity(isDark ? 0.4 : 0.15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(isSmallScreen ? 20 : 28),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius:
+                        BorderRadius.circular(isSmallScreen ? 20 : 28),
+                    gradient: LinearGradient(
+                      colors: isDark
+                          ? [const Color(0xFF2D2D2D), const Color(0xFF404040)]
+                          : [Colors.white, Colors.grey.shade50],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                    child: Row(
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isSmallScreen ? 20.0 : 32.0,
+                      vertical: isSmallScreen ? 24.0 : 36.0,
+                    ),
+                    child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.lightbulb,
-                            color: Colors.white, size: 32),
-                        const SizedBox(width: 12),
-                        Text(
-                          'SAT Question of the Day',
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF6C5CE7), Color(0xFF74B9FF)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 28),
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color:
-                          isDark ? Colors.blue.shade900 : Colors.blue.shade50,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isDark
-                            ? Colors.blue.shade700
-                            : Colors.blue.shade100,
-                      ),
-                    ),
-                    child: Text(
-                      question,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        fontSize: 17,
-                        height: 1.5,
-                        color: isDark ? Colors.white : Colors.black87,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  ...List.generate(choices.length, (i) {
-                    final isSelected = _selectedIndex == i;
-                    final isCorrect = _answered && i == correctIndex;
-                    final isWrong =
-                        _answered && isSelected && i != correctIndex;
-                    Color? tileColor;
-                    Color? borderColor;
-                    if (isCorrect) {
-                      tileColor = Colors.green.withOpacity(0.15);
-                      borderColor = Colors.green;
-                    } else if (isWrong) {
-                      tileColor = Colors.red.withOpacity(0.12);
-                      borderColor = Colors.red;
-                    } else {
-                      borderColor = isSelected
-                          ? theme.colorScheme.primary
-                          : Colors.grey.shade300;
-                    }
-
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      decoration: BoxDecoration(
-                        color: tileColor ??
-                            (isSelected
-                                ? theme.colorScheme.primary.withOpacity(0.05)
-                                : (isDark
-                                    ? const Color(0xFF404040)
-                                    : Colors.white)),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: borderColor,
-                          width: isSelected || _answered ? 2 : 1,
-                        ),
-                        boxShadow: isSelected
-                            ? [
-                                BoxShadow(
-                                  color: theme.colorScheme.primary
-                                      .withOpacity(0.2),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.lightbulb,
+                                  color: Colors.white, size: 32),
+                              const SizedBox(width: 12),
+                              Text(
+                                'SAT Question of the Day',
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                              ]
-                            : null,
-                      ),
-                      child: RadioListTile<int>(
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        title: Text(
-                          choices[i],
-                          style: TextStyle(
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.normal,
-                            color: isCorrect
-                                ? Colors.green.shade700
-                                : isWrong
-                                    ? Colors.red.shade700
-                                    : (isDark ? Colors.white : Colors.black87),
+                              ),
+                            ],
                           ),
                         ),
-                        value: i,
-                        groupValue: _selectedIndex,
-                        onChanged: _answered
-                            ? null
-                            : (val) {
-                                setState(() {
-                                  _selectedIndex = val;
-                                });
-                              },
-                        activeColor: theme.colorScheme.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    );
-                  }),
-                  const SizedBox(height: 28),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF6C5CE7), Color(0xFF74B9FF)],
-                          ),
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF6C5CE7).withOpacity(0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
+                        SizedBox(height: isSmallScreen ? 20 : 28),
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? Colors.blue.shade900
+                                : Colors.blue.shade50,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isDark
+                                  ? Colors.blue.shade700
+                                  : Colors.blue.shade100,
                             ),
-                          ],
+                          ),
+                          child: Text(
+                            question,
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              fontSize: isSmallScreen ? 15 : 17,
+                              height: 1.5,
+                              color: isDark ? Colors.white : Colors.black87,
+                            ),
+                          ),
                         ),
-                        child: ElevatedButton.icon(
-                          icon: const Icon(Icons.check, color: Colors.white),
-                          label: const Text('Check Answer',
-                              style: TextStyle(color: Colors.white)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 28, vertical: 16),
-                            textStyle: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600),
-                            shape: RoundedRectangleBorder(
+                        SizedBox(height: isSmallScreen ? 24 : 32),
+                        ...List.generate(choices.length, (i) {
+                          final isSelected = _selectedIndex == i;
+                          final isCorrect = _answered && i == correctIndex;
+                          final isWrong =
+                              _answered && isSelected && i != correctIndex;
+                          Color? tileColor;
+                          Color? borderColor;
+                          if (isCorrect) {
+                            tileColor = Colors.green.withOpacity(0.15);
+                            borderColor = Colors.green;
+                          } else if (isWrong) {
+                            tileColor = Colors.red.withOpacity(0.12);
+                            borderColor = Colors.red;
+                          } else {
+                            borderColor = isSelected
+                                ? theme.colorScheme.primary
+                                : Colors.grey.shade300;
+                          }
+
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            margin: EdgeInsets.symmetric(
+                              vertical: isSmallScreen ? 6 : 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: tileColor ??
+                                  (isSelected
+                                      ? theme.colorScheme.primary
+                                          .withOpacity(0.05)
+                                      : (isDark
+                                          ? const Color(0xFF404040)
+                                          : Colors.white)),
                               borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: borderColor,
+                                width: isSelected || _answered ? 2 : 1,
+                              ),
+                              boxShadow: isSelected
+                                  ? [
+                                      BoxShadow(
+                                        color: theme.colorScheme.primary
+                                            .withOpacity(0.2),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ]
+                                  : null,
                             ),
-                          ),
-                          onPressed: _answered || _selectedIndex == null
-                              ? null
-                              : () {
-                                  setState(() {
-                                    _answered = true;
-                                  });
-                                },
-                        ),
-                      ),
-                      if (_answered)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0),
-                          child: OutlinedButton.icon(
-                            icon: const Icon(Icons.refresh),
-                            label: const Text('Try Again'),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 16),
-                              textStyle: const TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w600),
-                              foregroundColor: theme.colorScheme.primary,
-                              side: BorderSide(
-                                  color: theme.colorScheme.primary, width: 2),
+                            child: RadioListTile<int>(
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: isSmallScreen ? 12 : 16,
+                                vertical: isSmallScreen ? 4 : 8,
+                              ),
+                              title: Text(
+                                choices[i],
+                                style: TextStyle(
+                                  fontWeight: isSelected
+                                      ? FontWeight.w600
+                                      : FontWeight.normal,
+                                  color: isCorrect
+                                      ? Colors.green.shade700
+                                      : isWrong
+                                          ? Colors.red.shade700
+                                          : (isDark
+                                              ? Colors.white
+                                              : Colors.black87),
+                                ),
+                              ),
+                              value: i,
+                              groupValue: _selectedIndex,
+                              onChanged: _answered
+                                  ? null
+                                  : (val) {
+                                      setState(() {
+                                        _selectedIndex = val;
+                                      });
+                                    },
+                              activeColor: theme.colorScheme.primary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
                             ),
-                            onPressed: () {
-                              setState(() {
-                                _answered = false;
-                                _selectedIndex = null;
-                              });
-                            },
-                          ),
-                        ),
-                    ],
-                  ),
-                  if (_answered)
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.only(top: 28.0),
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: _selectedIndex == correctIndex
-                            ? Colors.green.shade50
-                            : Colors.red.shade50,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: _selectedIndex == correctIndex
-                              ? Colors.green.shade200
-                              : Colors.red.shade200,
-                        ),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: _selectedIndex == correctIndex
-                                  ? Colors.green
-                                  : Colors.red,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Icon(
-                              _selectedIndex == correctIndex
-                                  ? Icons.check
-                                  : Icons.close,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _selectedIndex == correctIndex
-                                      ? 'Correct!'
-                                      : 'Incorrect',
-                                  style: TextStyle(
-                                    color: _selectedIndex == correctIndex
-                                        ? Colors.green.shade700
-                                        : Colors.red.shade700,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
+                          );
+                        }),
+                        SizedBox(height: isSmallScreen ? 20 : 28),
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 16,
+                          runSpacing: 12,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFF6C5CE7),
+                                    Color(0xFF74B9FF)
+                                  ],
                                 ),
-                                if (_selectedIndex != correctIndex) ...[
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'The correct answer is:',
-                                    style: TextStyle(
-                                      color: Colors.red.shade600,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    choices[correctIndex],
-                                    style: TextStyle(
-                                      color: Colors.red.shade700,
-                                      fontSize: 15,
-                                    ),
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF6C5CE7)
+                                        .withOpacity(0.3),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
                                   ),
                                 ],
+                              ),
+                              child: ElevatedButton.icon(
+                                icon: const Icon(Icons.check,
+                                    color: Colors.white),
+                                label: const Text('Check Answer',
+                                    style: TextStyle(color: Colors.white)),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: isSmallScreen ? 20 : 28,
+                                    vertical: isSmallScreen ? 12 : 16,
+                                  ),
+                                  textStyle: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                onPressed: _answered || _selectedIndex == null
+                                    ? null
+                                    : () {
+                                        setState(() {
+                                          _answered = true;
+                                        });
+                                      },
+                              ),
+                            ),
+                            if (_answered)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 16.0),
+                                child: OutlinedButton.icon(
+                                  icon: const Icon(Icons.refresh),
+                                  label: const Text('Try Again'),
+                                  style: OutlinedButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: isSmallScreen ? 20 : 24,
+                                      vertical: isSmallScreen ? 12 : 16,
+                                    ),
+                                    textStyle: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600),
+                                    foregroundColor: theme.colorScheme.primary,
+                                    side: BorderSide(
+                                        color: theme.colorScheme.primary,
+                                        width: 2),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _answered = false;
+                                      _selectedIndex = null;
+                                    });
+                                  },
+                                ),
+                              ),
+                          ],
+                        ),
+                        if (_answered)
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: EdgeInsets.only(
+                              top: isSmallScreen ? 20.0 : 28.0,
+                            ),
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: _selectedIndex == correctIndex
+                                  ? Colors.green.shade50
+                                  : Colors.red.shade50,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: _selectedIndex == correctIndex
+                                    ? Colors.green.shade200
+                                    : Colors.red.shade200,
+                              ),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: _selectedIndex == correctIndex
+                                        ? Colors.green
+                                        : Colors.red,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Icon(
+                                    _selectedIndex == correctIndex
+                                        ? Icons.check
+                                        : Icons.close,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _selectedIndex == correctIndex
+                                            ? 'Correct!'
+                                            : 'Incorrect',
+                                        style: TextStyle(
+                                          color: _selectedIndex == correctIndex
+                                              ? Colors.green.shade700
+                                              : Colors.red.shade700,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      if (_selectedIndex != correctIndex) ...[
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          'The correct answer is:',
+                                          style: TextStyle(
+                                            color: Colors.red.shade600,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          choices[correctIndex],
+                                          style: TextStyle(
+                                            color: Colors.red.shade700,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                      ],
                     ),
-                ],
+                  ),
+                ),
               ),
             ),
           ),

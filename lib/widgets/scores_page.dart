@@ -25,22 +25,18 @@ class _ScoresPageState extends State<ScoresPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Section
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: isDark
-                      ? [const Color(0xFF2D2D2D), const Color(0xFF404040)]
-                      : [const Color(0xFF6C5CE7), const Color(0xFF74B9FF)],
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF6C5CE7), Color(0xFF74B9FF)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: (isDark ? Colors.black : const Color(0xFF6C5CE7))
-                        .withOpacity(0.3),
+                    color: const Color(0xFF6C5CE7).withOpacity(0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 6),
                   ),
@@ -83,87 +79,243 @@ class _ScoresPageState extends State<ScoresPage> {
               ),
             ),
             const SizedBox(height: 24),
-
-            // Add Score Form
             Card(
               elevation: 8,
-              shadowColor: Colors.black.withOpacity(isDark ? 0.4 : 0.1),
+              shadowColor: Colors.black.withOpacity(0.1),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20)),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+                  gradient: LinearGradient(
+                    colors: [Colors.white, Colors.grey.shade50],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: Column(
                     children: [
-                      // AP Exam Dropdown
-                      DropdownMenu<String>(
-                        width: double.infinity,
-                        onSelected: (test) {
-                          setState(() {
-                            selectedTest = test;
-                          });
-                        },
-                        hintText: 'Select an AP Exam',
-                        dropdownMenuEntries: const <DropdownMenuEntry<String>>[
-                          DropdownMenuEntry(
-                              value: 'AP African American Studies',
-                              label: 'AP African American Studies'),
-                          DropdownMenuEntry(
-                              value: 'AP Art History', label: 'AP Art History'),
-                          DropdownMenuEntry(
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: isDark
+                                ? const Color(0xFF555555)
+                                : Colors.grey.shade300,
+                          ),
+                          color:
+                              isDark ? const Color(0xFF404040) : Colors.white,
+                        ),
+                        child: DropdownMenu<String>(
+                          width: double.infinity,
+                          onSelected: (test) {
+                            setState(() {
+                              selectedTest = test;
+                            });
+                          },
+                          hintText: '🎓 Search or select an AP Exam',
+                          textStyle: TextStyle(
+                            fontSize: 16,
+                            color: isDark ? Colors.white : Colors.black87,
+                          ),
+                          menuStyle: MenuStyle(
+                            backgroundColor: WidgetStateProperty.all(
+                              isDark ? const Color(0xFF2D2D2D) : Colors.white,
+                            ),
+                            maximumSize: WidgetStateProperty.all(
+                              const Size(double.infinity, 300),
+                            ),
+                            shape: WidgetStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                          ),
+                          inputDecorationTheme: InputDecorationTheme(
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 16,
+                            ),
+                            hintStyle: TextStyle(
+                              color: isDark
+                                  ? Colors.grey.shade400
+                                  : Colors.grey.shade600,
+                              fontSize: 16,
+                            ),
+                          ),
+                          dropdownMenuEntries: const <DropdownMenuEntry<
+                              String>>[
+                            DropdownMenuEntry(
                               value: 'AP 2-D Art and Design',
-                              label: 'AP 2-D Art and Design'),
-                          DropdownMenuEntry(
+                              label: '🎨 AP 2-D Art and Design',
+                            ),
+                            DropdownMenuEntry(
                               value: 'AP 3-D Art and Design',
-                              label: 'AP 3-D Art and Design'),
-                          DropdownMenuEntry(
-                              value: 'AP Drawing', label: 'AP Drawing'),
-                          DropdownMenuEntry(
-                              value: 'AP Biology', label: 'AP Biology'),
-                          DropdownMenuEntry(
-                              value: 'AP Calculus AB', label: 'AP Calculus AB'),
-                          DropdownMenuEntry(
-                              value: 'AP Calculus BC', label: 'AP Calculus BC'),
-                          DropdownMenuEntry(
-                              value: 'AP Chemistry', label: 'AP Chemistry'),
-                          DropdownMenuEntry(
-                              value: 'AP Computer Science A',
-                              label: 'AP Computer Science A'),
-                          DropdownMenuEntry(
-                              value: 'AP Computer Science Principles',
-                              label: 'AP Computer Science Principles'),
-                          DropdownMenuEntry(
-                              value: 'AP English Language and Composition',
-                              label: 'AP English Language and Composition'),
-                          DropdownMenuEntry(
-                              value: 'AP English Literature and Composition',
-                              label: 'AP English Literature and Composition'),
-                          DropdownMenuEntry(
+                              label: '🏺 AP 3-D Art and Design',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Art History',
+                              label: '🖼️ AP Art History',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Drawing',
+                              label: '✏️ AP Drawing',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Music Theory',
+                              label: '🎵 AP Music Theory',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Biology',
+                              label: '🧬 AP Biology',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Chemistry',
+                              label: '⚗️ AP Chemistry',
+                            ),
+                            DropdownMenuEntry(
                               value: 'AP Environmental Science',
-                              label: 'AP Environmental Science'),
-                          DropdownMenuEntry(
+                              label: '🌱 AP Environmental Science',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Physics 1',
+                              label: '⚛️ AP Physics 1: Algebra-Based',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Physics 2',
+                              label: '🔬 AP Physics 2: Algebra-Based',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Physics C: Electricity and Magnetism',
+                              label:
+                                  '🔌 AP Physics C: Electricity and Magnetism',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Physics C: Mechanics',
+                              label: '⚙️ AP Physics C: Mechanics',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Calculus AB',
+                              label: '📐 AP Calculus AB',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Calculus BC',
+                              label: '📊 AP Calculus BC',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Calculus BC: AB Subscore',
+                              label: '📈 AP Calculus BC: AB Subscore',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Statistics',
+                              label: '📊 AP Statistics',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Computer Science A',
+                              label: '💻 AP Computer Science A',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Computer Science Principles',
+                              label: '🖥️ AP Computer Science Principles',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP English Language and Composition',
+                              label: '📝 AP English Language and Composition',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP English Literature and Composition',
+                              label: '📚 AP English Literature and Composition',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP African American Studies',
+                              label: '🏛️ AP African American Studies',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Comparative Government and Politics',
+                              label:
+                                  '🏛️ AP Comparative Government and Politics',
+                            ),
+                            DropdownMenuEntry(
                               value: 'AP European History',
-                              label: 'AP European History'),
-                          DropdownMenuEntry(
-                              value: 'AP Psychology', label: 'AP Psychology'),
-                          DropdownMenuEntry(
-                              value: 'AP Statistics', label: 'AP Statistics'),
-                          DropdownMenuEntry(
+                              label: '🏰 AP European History',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Human Geography',
+                              label: '🌍 AP Human Geography',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Psychology',
+                              label: '🧠 AP Psychology',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP United States Government and Politics',
+                              label:
+                                  '🇺🇸 AP United States Government and Politics',
+                            ),
+                            DropdownMenuEntry(
                               value: 'AP United States History',
-                              label: 'AP United States History'),
-                          DropdownMenuEntry(
+                              label: '📜 AP United States History',
+                            ),
+                            DropdownMenuEntry(
                               value: 'AP World History: Modern',
-                              label: 'AP World History: Modern'),
-                        ],
-                        initialSelection: selectedTest,
+                              label: '🌎 AP World History: Modern',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Macroeconomics',
+                              label: '💰 AP Macroeconomics',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Microeconomics',
+                              label: '💲 AP Microeconomics',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Chinese Language and Culture',
+                              label: '🇨🇳 AP Chinese Language and Culture',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP French Language and Culture',
+                              label: '🇫🇷 AP French Language and Culture',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP German Language and Culture',
+                              label: '🇩🇪 AP German Language and Culture',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Italian Language and Culture',
+                              label: '🇮🇹 AP Italian Language and Culture',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Japanese Language and Culture',
+                              label: '🇯🇵 AP Japanese Language and Culture',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Latin',
+                              label: '🏛️ AP Latin',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Spanish Language and Culture',
+                              label: '🇪🇸 AP Spanish Language and Culture',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Spanish Literature and Culture',
+                              label: '📖 AP Spanish Literature and Culture',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Research',
+                              label: '🔍 AP Research',
+                            ),
+                            DropdownMenuEntry(
+                              value: 'AP Seminar',
+                              label: '💭 AP Seminar',
+                            ),
+                          ],
+                          initialSelection: selectedTest,
+                        ),
                       ),
                       const SizedBox(height: 20),
-
-                      // Score and Add Button Row
                       Row(
                         children: [
                           Expanded(
@@ -199,16 +351,8 @@ class _ScoresPageState extends State<ScoresPage> {
                           const SizedBox(width: 20),
                           Container(
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: isDark
-                                    ? [
-                                        const Color(0xFF404040),
-                                        const Color(0xFF6C5CE7)
-                                      ]
-                                    : [
-                                        const Color(0xFF6C5CE7),
-                                        const Color(0xFF74B9FF)
-                                      ],
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF6C5CE7), Color(0xFF74B9FF)],
                               ),
                               borderRadius: BorderRadius.circular(16),
                               boxShadow: [
@@ -254,16 +398,14 @@ class _ScoresPageState extends State<ScoresPage> {
               ),
             ),
             const SizedBox(height: 32),
-
-            // Scores List Section
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF2D2D2D) : Colors.white,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                    color: Colors.black.withOpacity(0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -288,8 +430,7 @@ class _ScoresPageState extends State<ScoresPage> {
                         "Your AP Scores",
                         style: theme.textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color:
-                              isDark ? Colors.white : const Color(0xFF2D3436),
+                          color: const Color(0xFF2D3436),
                         ),
                       ),
                     ],
@@ -299,30 +440,19 @@ class _ScoresPageState extends State<ScoresPage> {
                     Container(
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                        color: isDark
-                            ? const Color(0xFF404040)
-                            : Colors.grey.shade50,
+                        color: Colors.grey.shade50,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: isDark
-                              ? const Color(0xFF555555)
-                              : Colors.grey.shade200,
-                        ),
+                        border: Border.all(color: Colors.grey.shade200),
                       ),
                       child: Row(
                         children: [
                           Icon(Icons.info_outline,
-                              color: isDark
-                                  ? Colors.grey.shade400
-                                  : Colors.grey.shade600,
-                              size: 24),
+                              color: Colors.grey.shade600, size: 24),
                           const SizedBox(width: 12),
                           Text(
                             "No AP scores added yet.",
                             style: TextStyle(
-                              color: isDark
-                                  ? Colors.grey.shade400
-                                  : Colors.grey.shade600,
+                              color: Colors.grey.shade600,
                               fontSize: 16,
                             ),
                           ),
@@ -339,18 +469,12 @@ class _ScoresPageState extends State<ScoresPage> {
                         return Container(
                           margin: const EdgeInsets.only(bottom: 12),
                           decoration: BoxDecoration(
-                            color:
-                                isDark ? const Color(0xFF404040) : Colors.white,
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: isDark
-                                  ? const Color(0xFF555555)
-                                  : Colors.grey.shade200,
-                            ),
+                            border: Border.all(color: Colors.grey.shade200),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black
-                                    .withOpacity(isDark ? 0.2 : 0.03),
+                                color: Colors.black.withOpacity(0.03),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
@@ -393,10 +517,9 @@ class _ScoresPageState extends State<ScoresPage> {
                             ),
                             title: Text(
                               exam,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
-                                color: isDark ? Colors.white : Colors.black87,
                               ),
                             ),
                             subtitle: Text(
